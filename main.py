@@ -39,8 +39,9 @@ if __name__ == "__main__":
             loop_labels = []
             loop_labels = []
             abs_errors = []
+            stats_upper_bound = ((1 / frequency) * 1.2) * 1e3
             stats = [["Clock/Period Name", "Min (ms)", "Max (ms)", "Mean (ms)", "Std. (ms)",
-                    "Count > Std.", "CPU Usage"]]
+                    f"Periods > {stats_upper_bound:.2f}ms", "CPU Usage"]]
             for clock, clock_name in clocks:
                 for period_func, period_func_name in period_funcs:
                     print(f"--- Clock: {clock_name} | Period Function: {period_func_name} ---")
@@ -70,7 +71,7 @@ if __name__ == "__main__":
                     curr_stats.append(max(periods))
                     curr_stats.append(np.mean(periods))
                     curr_stats.append(round(np.std(periods), 7))
-                    curr_stats.append(np.sum(periods > np.mean(periods) + np.std(periods)))
+                    curr_stats.append(np.sum(np.array(periods) > stats_upper_bound))
                     curr_stats.append(f"{(cpu_time / total_time) * 100}%")
                     stats.append(curr_stats)
 
